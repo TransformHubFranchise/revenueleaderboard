@@ -1,0 +1,331 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.board{font-size:13px;padding:2px 0 16px}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.hdr-title{font-size:14px;font-weight:500;color:var(--color-text-primary)}
+.hdr-sub{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+.alert-bar{background:#FCEBEB;border:0.5px solid #F09595;border-radius:var(--border-radius-md);padding:9px 14px;margin-bottom:8px;font-size:12px;color:#501313;line-height:1.5}
+.tab-bar{display:flex;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:14px;flex-wrap:wrap}
+.tb{padding:7px 13px;font-size:12px;color:var(--color-text-secondary);cursor:pointer;border:none;border-bottom:2.5px solid transparent;margin-bottom:-0.5px;background:transparent;font-family:inherit;white-space:nowrap}
+.tb.on{font-weight:500}.tb.r.on{border-bottom-color:#E24B4A;color:#A32D2D}.tb.am.on{border-bottom-color:#EF9F27;color:#854F0B}.tb.gr.on{border-bottom-color:#63A822;color:#3B6D11}.tb.dg.on{border-bottom-color:#1DAF82;color:#0F6E56}.tb.al.on{border-bottom-color:var(--color-text-primary);color:var(--color-text-primary)}
+.net-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:10px}
+.nc{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:9px 10px;text-align:center;cursor:pointer;border:0.5px solid transparent}
+.nc:hover{border-color:var(--color-border-secondary)}.nc.sel{border-color:var(--color-border-primary)}
+.nc-n{font-size:20px;font-weight:500;line-height:1}.nc-l{font-size:10px;color:var(--color-text-secondary);margin-top:3px}
+.avg-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:14px;padding:12px;background:var(--color-background-secondary);border-radius:var(--border-radius-lg)}
+.avg-item{padding:0 10px;border-left:0.5px solid var(--color-border-tertiary)}.avg-item:first-child{border-left:none;padding-left:0}
+.avg-label{font-size:10px;color:var(--color-text-secondary);margin-bottom:3px}
+.avg-val{font-size:14px;font-weight:500;color:var(--color-text-primary);font-variant-numeric:tabular-nums}
+.avg-sub{font-size:10px;color:var(--color-text-secondary);margin-top:1px}
+.section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.slbl{font-size:10px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.06em}
+.view-toggle{display:flex;gap:2px}
+.vbtn{padding:3px 10px;font-size:11px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-secondary);cursor:pointer;font-family:inherit}
+.vbtn.on{background:var(--color-background-secondary);color:var(--color-text-primary);font-weight:500}
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:8px;margin-bottom:18px}
+.sc{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:10px;border-top:3px solid transparent}
+.sc.Red{border-top-color:#E24B4A}.sc.Amber{border-top-color:#EF9F27}.sc.Green{border-top-color:#63A822}.sc.DG{border-top-color:#1DAF82}
+.sc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px}
+.rb{display:inline-block;font-size:10px;font-weight:500;padding:2px 7px;border-radius:var(--border-radius-md)}
+.rb.Red{background:#FCEBEB;color:#791F1F}.rb.Amber{background:#FAEEDA;color:#633806}.rb.Green{background:#EAF3DE;color:#27500A}.rb.DG{background:#E1F5EE;color:#085041}
+.pdfb{font-size:10px;padding:2px 8px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-secondary);cursor:pointer;font-family:inherit;flex-shrink:0}
+.pdfb:hover{background:var(--color-background-secondary)}
+.sn{font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:1px;line-height:1.3}
+.sm{font-size:10px;color:var(--color-text-secondary);margin-bottom:5px}
+.sr{font-size:16px;font-weight:500;color:var(--color-text-primary);font-variant-numeric:tabular-nums}
+.sbd{display:flex;height:5px;border-radius:2px;overflow:hidden;margin:5px 0 3px}
+.sg2{font-size:10px;color:var(--color-text-secondary);padding-top:5px;border-top:0.5px solid var(--color-border-tertiary);margin-top:4px;display:flex;justify-content:space-between;gap:4px}
+.list-wrap{overflow-x:auto;margin-bottom:18px}
+.list-tbl{width:100%;border-collapse:collapse;font-size:12px;min-width:620px}
+.list-tbl thead th{text-align:left;padding:7px 8px;font-size:10px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid var(--color-border-tertiary);white-space:nowrap}
+.list-tbl thead th.r{text-align:right}
+.list-tbl tbody tr{border-bottom:0.5px solid var(--color-border-tertiary)}
+.list-tbl tbody tr:hover{background:var(--color-background-secondary)}
+.list-tbl tbody td{padding:7px 8px;color:var(--color-text-primary);vertical-align:middle}
+.list-tbl tbody td.r{text-align:right;font-variant-numeric:tabular-nums}.list-tbl tbody td.muted{color:var(--color-text-secondary);font-size:11px}
+.rr-wrap{border-top:0.5px solid var(--color-border-tertiary);padding-top:14px;margin-top:4px}
+.rr-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:8px}
+.rr-lbl{font-size:12px;font-weight:500;color:var(--color-text-primary)}
+.rr-sel{font-size:11px;padding:4px 8px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);font-family:inherit;cursor:pointer;max-width:240px}
+.leg{display:flex;gap:12px;margin-bottom:8px;font-size:10px;color:var(--color-text-secondary);flex-wrap:wrap;align-items:center}
+.li{display:flex;align-items:center;gap:5px}
+.ann{font-size:10px;color:var(--color-text-secondary);margin-top:6px;border-top:0.5px solid var(--color-border-tertiary);padding-top:6px}
+#pdf-preview{display:none;margin-top:20px}
+.preview-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--color-background-secondary);border-radius:var(--border-radius-lg);margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.preview-bar-title{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.preview-bar-sub{font-size:11px;color:var(--color-text-secondary);margin-top:1px}
+.preview-actions{display:flex;gap:8px}
+.print-btn{font-size:12px;padding:6px 14px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-primary);background:var(--color-background-primary);color:var(--color-text-primary);cursor:pointer;font-family:inherit;font-weight:500}
+.print-btn:hover{background:var(--color-background-secondary)}
+.close-btn{font-size:12px;padding:6px 12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-secondary);cursor:pointer;font-family:inherit}
+#report-body{background:#fff;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:28px;font-family:-apple-system,Helvetica,sans-serif;color:#1a1a1a}
+@media print{*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}.board,.preview-bar{display:none!important}#pdf-preview{display:block!important}#report-body{border:none;padding:0}}
+</style>
+
+<h2 class="sr-only">Transform Hub live network board — 23 sites, March 2026 actuals, EFT includes all recurring memberships</h2>
+
+<div class="board">
+  <div class="hdr">
+    <div><div class="hdr-title">Network performance board</div><div class="hdr-sub">Transform Hub · 23 sites · March 2026 actuals · gross incl. VAT · EFT includes all recurring membership types</div></div>
+    <div style="font-size:11px;color:var(--color-text-secondary);text-align:right">KPI month: Mar 2026<br>Source: Mindbody ticket receipt</div>
+  </div>
+  <div class="alert-bar"><strong>17 of 23 sites Red in March 2026.</strong> Network average £28,062 vs £34k+ mature-hub target. Several sites 3–4 years old are below £25k. Immediate review required across mature estate.</div>
+
+  <div class="tab-bar" id="tab-bar"></div>
+  <div class="slbl" style="margin-bottom:8px">Network snapshot — March 2026</div>
+  <div class="net-grid" id="net-grid"></div>
+  <div class="avg-strip" id="avg-strip"></div>
+  <div class="section-hdr">
+    <div class="slbl" id="site-label"></div>
+    <div class="view-toggle">
+      <button class="vbtn on" id="vbtn-cards" onclick="setView('cards')">Cards</button>
+      <button class="vbtn" id="vbtn-list" onclick="setView('list')">List</button>
+    </div>
+  </div>
+  <div id="cards-view"><div class="sg" id="site-grid"></div></div>
+  <div id="list-view" style="display:none"><div class="list-wrap"><table class="list-tbl" id="site-list"></table></div></div>
+
+  <div class="rr-wrap">
+    <div class="rr-hdr">
+      <div class="rr-lbl">Run rate — next 12 months from Mar 2026</div>
+      <select class="rr-sel" id="site-sel" onchange="updateChart()"></select>
+    </div>
+    <div class="leg">
+      <span class="li"><svg width="18" height="8"><line x1="0" y1="4" x2="18" y2="4" stroke="#378ADD" stroke-width="2"/></svg>Projected</span>
+      <span class="li"><svg width="18" height="8"><line x1="0" y1="4" x2="18" y2="4" stroke="#63A822" stroke-width="1.5" stroke-dasharray="5,3"/></svg>Green floor</span>
+      <span class="li"><svg width="18" height="8"><line x1="0" y1="4" x2="18" y2="4" stroke="#E24B4A" stroke-width="1.5" stroke-dasharray="3,3"/></svg>Red ceiling</span>
+    </div>
+    <div style="position:relative;width:100%;height:260px">
+      <canvas id="rrChart" role="img" aria-label="12-month run rate projection from March 2026 actuals">Projected monthly revenue for next 12 months.</canvas>
+    </div>
+    <div class="ann">Gross incl. VAT. Refunds already negative in source (Is Return=1). EFT = Revenue Category contains EFT/Memberships/BEO Monthly/Weekly Recurring/Tribe/12 Month Power etc. PIF = contains PIF/Unlimited Sessions/6 Months PIF. Front End = Trial/Challenge/Payments on Account. Other = sessions, products, events.</div>
+  </div>
+</div>
+
+<div id="pdf-preview">
+  <div class="preview-bar">
+    <div><div class="preview-bar-title" id="preview-title"></div><div class="preview-bar-sub">Click Print / Save as PDF to export</div></div>
+    <div class="preview-actions">
+      <button class="print-btn" onclick="window.print()">Print / Save as PDF</button>
+      <button class="close-btn" onclick="closePreview()">Close</button>
+    </div>
+  </div>
+  <div id="report-body"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const SITES=[
+  {name:'Mens Hub Warrington',months:44,rev:29968,fe:6387,eft:15881,pif:7600,other:100,refunds:-312,refund_n:3,rag:'Red',stage:'24m+ mature'},
+  {name:'TH Bromborough',months:31,rev:31926.94,fe:11879.50,eft:12063.44,pif:7914,other:70,refunds:-3043.16,refund_n:7,rag:'Red',stage:'24m+ mature'},
+  {name:'TH Clitheroe',months:35,rev:33102.50,fe:7183.50,eft:19735,pif:5609,other:575,refunds:-2959,refund_n:8,rag:'Red',stage:'24m+ mature'},
+  {name:'TH Bamber Bridge',months:40,rev:23042,fe:9564,eft:11183,pif:2295,other:0,refunds:-646,refund_n:2,rag:'Red',stage:'24m+ mature'},
+  {name:'TH Bolton',months:28,rev:30752,fe:8555.50,eft:14633,pif:6636,other:927.50,refunds:-626,refund_n:2,rag:'Red',stage:'24m+ mature'},
+  {name:'TH Conwy',months:44,rev:25008.16,fe:6716,eft:11674.66,pif:6565,other:52.50,refunds:-534,refund_n:3,rag:'Red',stage:'24m+ mature'},
+  {name:'TH Doncaster',months:15,rev:24864.98,fe:11069.64,eft:14785.34,pif:-990,other:0,refunds:-2853,refund_n:12,rag:'Red',stage:'12-24m appr. mature'},
+  {name:'TH Fleetwood',months:38,rev:19265.76,fe:6819.10,eft:10153.66,pif:2293,other:0,refunds:-1148.33,refund_n:7,rag:'Red',stage:'24m+ mature'},
+  {name:'TH Fylde',months:45,rev:27491.72,fe:8029.50,eft:12307.22,pif:7140,other:15,refunds:-2416,refund_n:5,rag:'Red',stage:'24m+ mature'},
+  {name:'TH Heywood',months:7,rev:19581.20,fe:11956.20,eft:5626,pif:1997,other:2,refunds:-599,refund_n:1,rag:'Red',stage:'7-12m late ramp'},
+  {name:'TH Knutsford',months:35,rev:22033,fe:1049,eft:13936,pif:7048,other:0,refunds:-588,refund_n:3,rag:'Red',stage:'24m+ mature'},
+  {name:'TH Leigh',months:9,rev:17608.97,fe:10414.97,eft:2597,pif:3598,other:999,refunds:-1498,refund_n:2,rag:'Red',stage:'7-12m late ramp'},
+  {name:'TH Lincoln',months:10,rev:23128.90,fe:14484.40,eft:5532.50,pif:3112,other:0,refunds:-2430,refund_n:4,rag:'Red',stage:'7-12m late ramp'},
+  {name:'TH Ormskirk',months:21,rev:16072.14,fe:9028.99,eft:4795,pif:2035,other:213.15,refunds:-196,refund_n:1,rag:'Red',stage:'12-24m appr. mature'},
+  {name:'TH Stoke',months:10,rev:20855.77,fe:13440.97,eft:7365.80,pif:0,other:49,refunds:-1376,refund_n:5,rag:'Red',stage:'7-12m late ramp'},
+  {name:'TH Warrington',months:46,rev:17499.50,fe:4583.50,eft:11382,pif:490,other:1044,refunds:-1298,refund_n:2,rag:'Red',stage:'24m+ mature'},
+  {name:'TH Wimbledon',months:42,rev:21651.50,fe:3727.50,eft:15425,pif:2499,other:0,refunds:-338,refund_n:2,rag:'Red',stage:'24m+ mature'},
+  {name:'TH Chertsey',months:42,rev:37557,fe:11936,eft:12381,pif:13240,other:0,refunds:0,refund_n:0,rag:'Amber',stage:'24m+ mature'},
+  {name:'TH Stockport',months:13,rev:32161.53,fe:16767.07,eft:8235.14,pif:5959.32,other:1200,refunds:-2343.68,refund_n:4,rag:'Amber',stage:'12-24m appr. mature'},
+  {name:'TH Crystal Peaks',months:20,rev:37338.80,fe:18451.25,eft:14050.66,pif:4000,other:836.89,refunds:-1508,refund_n:5,rag:'Green',stage:'12-24m appr. mature'},
+  {name:'TH Rotherham',months:44,rev:43388.88,fe:14168.67,eft:18924.12,pif:10241.10,other:54.99,refunds:-3411,refund_n:10,rag:'Green',stage:'24m+ mature'},
+  {name:'TH Leeds West',months:12,rev:40604.50,fe:16153.50,eft:22351,pif:2100,other:0,refunds:-3321.50,refund_n:8,rag:'DG',stage:'7-12m late ramp'},
+  {name:'TH St Helens',months:10,rev:50520.30,fe:21174.80,eft:17746,pif:11599.50,other:0,refunds:-5057,refund_n:14,rag:'DG',stage:'7-12m late ramp'},
+];
+
+const RAG_COLORS={Red:'#E24B4A',Amber:'#BA7517',Green:'#3B6D11',DG:'#0F6E56'};
+const RAG_DOT={Red:'#E24B4A',Amber:'#EF9F27',Green:'#63A822',DG:'#1DAF82'};
+const RAG_LABELS={Red:'Red',Amber:'Amber',Green:'Green',DG:'Dark green'};
+const TABS=[{id:'All',label:'All',cls:'al'},{id:'Red',label:'Red',cls:'r'},{id:'Amber',label:'Amber',cls:'am'},{id:'Green',label:'Green',cls:'gr'},{id:'DG',label:'Dark green',cls:'dg'}];
+let curTab='All',curView='cards';
+
+function getBands(m){if(m<=3)return[15000,20000,26000];if(m<=6)return[22000,27000,33000];if(m<=12)return[26000,31000,38000];if(m<=24)return[30000,35000,42000];return[34000,38000,44000];}
+function classifyFwd(m,r){const b=getBands(m);return r<b[0]?'Red':r<b[1]?'Amber':r<b[2]?'Green':'Dark green';}
+function fmt(n){return'£'+Math.round(n).toLocaleString('en-GB');}
+function fmtD(n){return(n<0?'−£':'£')+Math.abs(Math.round(n)).toLocaleString('en-GB');}
+function fmtK(n){return'£'+Math.round(n/1000)+'k';}
+function counts(){const c={Red:0,Amber:0,Green:0,DG:0,All:SITES.length};SITES.forEach(s=>c[s.rag]++);return c;}
+function getFiltered(){return curTab==='All'?SITES:SITES.filter(s=>s.rag===curTab);}
+function gapText(s){const b=getBands(s.months);if(s.rag==='Red')return'Gap to amber: '+fmt(b[0]-s.rev);if(s.rag==='Amber')return'Gap to green: '+fmt(b[1]-s.rev);if(s.rag==='Green')return'↑ '+fmt(b[2]-s.rev)+' to dark green';return'Best practice';}
+
+function bdBar(s){
+  const pos=s.fe+(s.eft>0?s.eft:0)+(s.pif>0?s.pif:0)+(s.other>0?s.other:0);
+  if(pos<=0)return'';
+  const fp=Math.max(0,Math.round(s.fe/pos*100));
+  const ep=Math.max(0,Math.round((s.eft>0?s.eft:0)/pos*100));
+  const pp=Math.max(0,Math.round((s.pif>0?s.pif:0)/pos*100));
+  const op=Math.max(0,100-fp-ep-pp);
+  return`<div class="sbd"><div style="width:${fp}%;background:#7F77DD;height:5px"></div><div style="width:${ep}%;background:#378ADD;height:5px"></div><div style="width:${pp}%;background:#1D9E75;height:5px"></div><div style="width:${op}%;background:#B4B2A9;height:5px"></div></div>`;
+}
+
+function renderAvgStrip(){
+  const total=SITES.reduce((a,s)=>a+s.rev,0);
+  const avg=total/SITES.length;
+  const refTotal=SITES.reduce((a,s)=>a+s.refunds,0);
+  const refN=SITES.reduce((a,s)=>a+s.refund_n,0);
+  const ragAvgs=Object.fromEntries(['Red','Amber','Green','DG'].map(r=>{const g=SITES.filter(s=>s.rag===r);return[r,g.length?g.reduce((a,s)=>a+s.rev,0)/g.length:0];}));
+  document.getElementById('avg-strip').innerHTML=`
+    <div class="avg-item"><div class="avg-label">Network total</div><div class="avg-val">${fmt(total)}</div><div class="avg-sub">Mar 2026 gross</div></div>
+    <div class="avg-item"><div class="avg-label">Average per site</div><div class="avg-val">${fmt(avg)}</div><div class="avg-sub">target £34k+</div></div>
+    <div class="avg-item"><div class="avg-label">Total refunds</div><div class="avg-val" style="color:#A32D2D">${fmtD(refTotal)}</div><div class="avg-sub">${refN} transactions</div></div>
+    <div class="avg-item"><div class="avg-label">Avg by RAG</div><div style="display:flex;gap:7px;margin-top:5px;flex-wrap:wrap">${['Red','Amber','Green','DG'].map(r=>`<span style="font-size:10px;display:flex;align-items:center;gap:3px"><span style="width:6px;height:6px;border-radius:50%;background:${RAG_DOT[r]};display:inline-block"></span><span style="font-weight:500;color:var(--color-text-primary)">${fmtK(ragAvgs[r])}</span></span>`).join('')}</div></div>`;
+}
+
+function renderTabs(){
+  const c=counts();
+  document.getElementById('tab-bar').innerHTML=TABS.map(t=>{const n=t.id==='All'?c.All:c[t.id];return`<button class="tb ${t.cls}${curTab===t.id?' on':''}" onclick="setTab('${t.id}')">${t.label} <span style="font-size:10px;opacity:0.65">${n}</span></button>`;}).join('');
+}
+function renderNetGrid(){
+  const c=counts();
+  document.getElementById('net-grid').innerHTML=
+    `<div class="nc${curTab==='All'?' sel':''}" onclick="setTab('All')"><div class="nc-n" style="color:var(--color-text-primary)">${SITES.length}</div><div class="nc-l">All sites</div></div>`+
+    ['Red','Amber','Green','DG'].map(r=>`<div class="nc${curTab===r?' sel':''}" onclick="setTab('${r}')"><div class="nc-n" style="color:${RAG_COLORS[r]}">${c[r]}</div><div class="nc-l">${RAG_LABELS[r]}</div></div>`).join('');
+}
+function renderCards(){
+  const filtered=getFiltered();
+  document.getElementById('site-grid').innerHTML=filtered.map(s=>{
+    const si=SITES.indexOf(s);
+    return`<div class="sc ${s.rag}">
+      <div class="sc-top"><span class="rb ${s.rag}">${RAG_LABELS[s.rag]}</span><button class="pdfb" onclick="openPreview(${si})">↓ PDF</button></div>
+      <div class="sn">${s.name}</div>
+      <div class="sm">Month ${s.months} · ${s.stage}</div>
+      <div class="sr">${fmt(s.rev)}</div>
+      ${bdBar(s)}
+      <div class="sg2">
+        <span>${gapText(s)}</span>
+        ${s.refunds<0?`<span style="font-size:9px;color:#A32D2D">Refunds: ${fmtD(s.refunds)}</span>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+function renderList(){
+  const filtered=getFiltered();
+  const rd=r=>`<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${RAG_DOT[r]};margin-right:5px;vertical-align:middle"></span>`;
+  document.getElementById('site-list').innerHTML=`<thead><tr>
+    <th>Site</th><th>Stage</th><th class="r">Gross</th><th class="r">Front end</th><th class="r">EFT</th><th class="r">PIF</th><th class="r">Refunds</th><th class="r">Other</th><th></th>
+  </tr></thead><tbody>${filtered.map(s=>{
+    const si=SITES.indexOf(s);
+    return`<tr>
+      <td><div style="display:flex;align-items:center">${rd(s.rag)}<div><div style="font-weight:500;font-size:12px">${s.name}</div><div style="font-size:10px;color:var(--color-text-secondary)">Month ${s.months}</div></div></div></td>
+      <td class="muted">${s.stage}</td>
+      <td class="r" style="font-weight:500">${fmt(s.rev)}</td>
+      <td class="r muted">${fmt(s.fe)}</td>
+      <td class="r muted">${fmt(Math.max(0,s.eft))}</td>
+      <td class="r muted">${s.pif<0?`<span style="color:#A32D2D">${fmtD(s.pif)}</span>`:fmt(Math.max(0,s.pif))}</td>
+      <td class="r" style="color:${s.refunds<0?'#A32D2D':'var(--color-text-secondary)'}">${s.refunds<0?fmtD(s.refunds):'—'}</td>
+      <td class="r muted">${s.other>0?fmt(s.other):'—'}</td>
+      <td style="text-align:right"><button class="pdfb" onclick="openPreview(${si})">↓ PDF</button></td>
+    </tr>`;
+  }).join('')}</tbody>`;
+}
+function renderSiteLabel(){const c=counts();const m={All:`All sites (${SITES.length})`,Red:`Red sites (${c.Red})`,Amber:`Amber sites (${c.Amber})`,Green:`Green sites (${c.Green})`,DG:`Dark green sites (${c.DG})`};document.getElementById('site-label').textContent=m[curTab];}
+function renderAll(){renderTabs();renderNetGrid();renderAvgStrip();renderSiteLabel();if(curView==='cards')renderCards();else renderList();}
+function setTab(t){curTab=t;renderAll();}
+function setView(v){curView=v;document.getElementById('vbtn-cards').classList.toggle('on',v==='cards');document.getElementById('vbtn-list').classList.toggle('on',v==='list');document.getElementById('cards-view').style.display=v==='cards'?'block':'none';document.getElementById('list-view').style.display=v==='list'?'block':'none';if(v==='cards')renderCards();else renderList();}
+
+function project(s){
+  const MN=['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'];
+  const YR=['26','26','26','26','26','26','26','26','26','27','27','27'];
+  const grMap={7:0.08,9:0.06,10:0.05,12:0.04,13:0.03,15:0.025,20:0.02,21:0.02,28:0.015,31:0.01,35:0.008,38:0.008,40:0.008,42:0.008,44:0.008,45:0.008,46:0.008};
+  const gr=grMap[s.months]||0.01;let rev=s.rev;
+  const data=[],labels=[],greenBand=[],redBand=[];
+  for(let i=0;i<12;i++){rev=rev*(1+gr);labels.push(MN[i]+" '"+YR[i]);data.push(Math.round(rev));const b=getBands(s.months+i+1);greenBand.push(b[1]);redBand.push(b[0]);}
+  return{labels,data,greenBand,redBand};
+}
+
+function buildSVGChart(s){
+  const{labels,data,greenBand,redBand}=project(s);
+  const W=600,H=210,PL=54,PR=16,PT=14,PB=46,cW=W-PL-PR,cH=H-PT-PB;
+  const allV=[...data,...greenBand,...redBand];
+  const minV=Math.min(...allV)*0.93,maxV=Math.max(...allV)*1.04;
+  const xp=i=>PL+(i/11)*cW,yp=v=>PT+cH-((v-minV)/(maxV-minV))*cH;
+  const poly=(vals,col,dash)=>`<polyline points="${vals.map((v,i)=>xp(i)+','+yp(v)).join(' ')}" fill="none" stroke="${col}" stroke-width="1.8"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  const gridLines=Array.from({length:6},(_,i)=>{const v=minV+(maxV-minV)*(i/5),y=yp(v);return`<line x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}" stroke="#ebebea" stroke-width="0.5"/><text x="${PL-4}" y="${y+3.5}" text-anchor="end" font-size="9" fill="#aaa">£${Math.round(v/1000)}k</text>`;}).join('');
+  const xL=labels.map((l,i)=>`<text x="${xp(i)}" y="${H-22}" text-anchor="middle" font-size="8.5" fill="#aaa" transform="rotate(-35,${xp(i)},${H-22})">${l}</text>`).join('');
+  const dots=data.map((v,i)=>`<circle cx="${xp(i)}" cy="${yp(v)}" r="2.8" fill="#378ADD"/>`).join('');
+  return`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="100%" style="display:block"><rect width="${W}" height="${H}" fill="#fafaf8" rx="6"/>${gridLines}<line x1="${PL}" y1="${PT}" x2="${PL}" y2="${PT+cH}" stroke="#ddd" stroke-width="0.5"/><line x1="${PL}" y1="${PT+cH}" x2="${W-PR}" y2="${PT+cH}" stroke="#ddd" stroke-width="0.5"/>${poly(redBand,'#E24B4A','3,3')}${poly(greenBand,'#63A822','5,3')}${poly(data,'#378ADD','')}${dots}${xL}<g font-size="9" fill="#888"><line x1="${PL}" y1="${H-5}" x2="${PL+12}" y2="${H-5}" stroke="#378ADD" stroke-width="2"/><text x="${PL+15}" y="${H-2}">Projected</text><line x1="${PL+80}" y1="${H-5}" x2="${PL+92}" y2="${H-5}" stroke="#63A822" stroke-width="1.5" stroke-dasharray="5,3"/><text x="${PL+95}" y="${H-2}">Green floor</text><line x1="${PL+158}" y1="${H-5}" x2="${PL+170}" y2="${H-5}" stroke="#E24B4A" stroke-width="1.5" stroke-dasharray="3,3"/><text x="${PL+173}" y="${H-2}">Red ceiling</text></g></svg>`;
+}
+
+function mc(l,v,sm){return`<div style="background:#f5f4f0;border-radius:8px;padding:11px 13px"><div style="font-size:10px;text-transform:uppercase;letter-spacing:0.05em;color:#888;margin-bottom:4px">${l}</div><div style="font-size:${sm?'12px':'17px'};font-weight:500;color:#1a1a1a;padding-top:${sm?'2px':'0'}">${v}</div></div>`;}
+const dot=c=>`<span style="display:inline-block;width:8px;height:8px;background:${c};border-radius:2px;margin-right:6px;vertical-align:middle"></span>`;
+
+function buildReport(si){
+  const s=SITES[si];const{labels,data}=project(s);
+  const rb={Red:'#FCEBEB',Amber:'#FAEEDA',Green:'#EAF3DE',DG:'#E1F5EE'}[s.rag];
+  const rt={Red:'#791F1F',Amber:'#633806',Green:'#27500A',DG:'#085041'}[s.rag];
+  const isFlag=s.rag==='Red'||s.rag==='Amber';
+  const posRev=s.fe+(s.eft>0?s.eft:0)+(s.pif>0?s.pif:0)+(s.other>0?s.other:0);
+  const fePct=Math.round(s.fe/posRev*100);
+  const eftPct=Math.round(Math.max(0,s.eft)/posRev*100);
+  const pifPct=Math.round(Math.max(0,s.pif)/posRev*100);
+  const othPct=Math.max(0,100-fePct-eftPct-pifPct);
+  const rows=labels.map((l,i)=>`<tr><td style="padding:6px 8px;border-bottom:1px solid #f0f0ee">${l}</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0ee;text-align:right;font-weight:500;font-variant-numeric:tabular-nums">£${data[i].toLocaleString('en-GB')}</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0ee;text-align:right;color:#555">${classifyFwd(s.months+i+1,data[i])}</td></tr>`).join('');
+  const h2=t=>`<div style="font-size:10px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:0.07em;margin:22px 0 10px;padding-top:18px;border-top:1px solid #eeede8">${t}</div>`;
+  return`<h1 style="font-size:21px;font-weight:500;margin-bottom:3px;color:#1a1a1a">${s.name}</h1>
+<p style="font-size:11px;color:#888;margin-bottom:20px">Site report · March 2026 actuals · gross incl. VAT · ${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}</p>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px">
+  ${mc('Gross (Mar 2026)','£'+Math.round(s.rev).toLocaleString('en-GB'))}
+  ${mc('RAG status',`<span style="display:inline-block;padding:2px 10px;border-radius:6px;font-size:12px;font-weight:500;background:${rb};color:${rt}">${RAG_LABELS[s.rag]}</span>`,true)}
+  ${mc('Refunds',`<span style="color:${s.refunds<0?'#A32D2D':'#1a1a1a'}">${s.refunds<0?'−£'+Math.abs(Math.round(s.refunds)).toLocaleString('en-GB'):'None'}</span> <span style="font-size:11px;color:#888">(${s.refund_n} txn)</span>`,true)}
+  ${mc('Months open',s.months)}${mc('Stage',s.stage,true)}${mc('Gap',gapText(s),true)}
+</div>
+${isFlag?`<div style="border-left:3px solid #EF9F27;background:#FAEEDA;padding:10px 14px;border-radius:0 6px 6px 0;font-size:12px;line-height:1.6;color:#1a1a1a;margin-bottom:0"><strong>30-day action flag:</strong> ${gapText(s)}. Audit new EFT pipeline and front-end close rate.</div>`:''}
+${h2('Revenue breakdown · March 2026 gross incl. VAT')}
+<div style="background:#fafaf8;border:1px solid #eee;border-radius:8px;padding:14px 16px">
+  <div style="display:flex;height:10px;border-radius:4px;overflow:hidden;margin-bottom:12px"><div style="width:${fePct}%;background:#7F77DD"></div><div style="width:${eftPct}%;background:#378ADD"></div><div style="width:${pifPct}%;background:#1D9E75"></div><div style="width:${othPct}%;background:#B4B2A9"></div></div>
+  <div style="display:flex;gap:12px;font-size:10px;color:#888;margin-bottom:14px;flex-wrap:wrap"><span>${dot('#7F77DD')}Front end</span><span>${dot('#378ADD')}EFT (incl. recurring)</span><span>${dot('#1D9E75')}PIF</span><span>${dot('#B4B2A9')}Other</span></div>
+  <table style="width:100%;border-collapse:collapse;font-size:12px">
+    <thead><tr style="border-bottom:1.5px solid #e0e0dc"><th style="text-align:left;padding:5px 8px;font-size:10px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:0.04em">Category</th><th style="text-align:right;padding:5px 8px;font-size:10px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:0.04em">Amount</th><th style="text-align:right;padding:5px 8px;font-size:10px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:0.04em">Share</th></tr></thead>
+    <tbody>
+      <tr style="border-bottom:1px solid #f0f0ee"><td style="padding:7px 8px">${dot('#7F77DD')}Front end sales (trials / challenges)</td><td style="padding:7px 8px;text-align:right;font-weight:500;font-variant-numeric:tabular-nums">£${Math.round(s.fe).toLocaleString('en-GB')}</td><td style="padding:7px 8px;text-align:right;color:#888">${fePct}%</td></tr>
+      <tr style="border-bottom:1px solid #f0f0ee"><td style="padding:7px 8px">${dot('#378ADD')}EFT sales (incl. recurring memberships)</td><td style="padding:7px 8px;text-align:right;font-weight:500;font-variant-numeric:tabular-nums">£${Math.round(Math.max(0,s.eft)).toLocaleString('en-GB')}</td><td style="padding:7px 8px;text-align:right;color:#888">${eftPct}%</td></tr>
+      <tr style="border-bottom:1px solid #f0f0ee"><td style="padding:7px 8px">${dot('#1D9E75')}PIF sales</td><td style="padding:7px 8px;text-align:right;font-weight:500;font-variant-numeric:tabular-nums">${s.pif<0?'<span style=color:#A32D2D>−£'+Math.abs(Math.round(s.pif)).toLocaleString('en-GB')+'</span>':'£'+Math.round(Math.max(0,s.pif)).toLocaleString('en-GB')}</td><td style="padding:7px 8px;text-align:right;color:#888">${pifPct}%</td></tr>
+      <tr style="border-bottom:1px solid #f0f0ee"><td style="padding:7px 8px">${dot('#B4B2A9')}Other (sessions, products, events)</td><td style="padding:7px 8px;text-align:right;font-weight:500;font-variant-numeric:tabular-nums">£${Math.round(s.other).toLocaleString('en-GB')}</td><td style="padding:7px 8px;text-align:right;color:#888">${othPct}%</td></tr>
+      ${s.refunds<0?`<tr style="border-bottom:1px solid #f0f0ee"><td style="padding:7px 8px;color:#A32D2D">Refunds (${s.refund_n} transactions — already deducted from gross)</td><td style="padding:7px 8px;text-align:right;font-weight:500;color:#A32D2D;font-variant-numeric:tabular-nums">−£${Math.abs(Math.round(s.refunds)).toLocaleString('en-GB')}</td><td style="padding:7px 8px;text-align:right;color:#A32D2D">—</td></tr>`:''}
+      <tr><td style="padding:7px 8px;font-weight:500">Total gross</td><td style="padding:7px 8px;text-align:right;font-weight:500;font-variant-numeric:tabular-nums">£${Math.round(s.rev).toLocaleString('en-GB')}</td><td style="padding:7px 8px;text-align:right;color:#888">100%</td></tr>
+    </tbody>
+  </table>
+</div>
+${h2('12-month run rate from Mar 2026')}
+<div style="border:1px solid #eee;border-radius:8px;padding:10px;margin-bottom:14px;background:#fafaf8">${buildSVGChart(s)}</div>
+<table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="border-bottom:1.5px solid #ddd"><th style="text-align:left;padding:6px 8px;font-size:10px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:0.04em">Month</th><th style="text-align:right;padding:6px 8px;font-size:10px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:0.04em">Projected gross</th><th style="text-align:right;padding:6px 8px;font-size:10px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:0.04em">Projected RAG</th></tr></thead><tbody>${rows}</tbody></table>
+<p style="margin-top:18px;padding-top:12px;border-top:1px solid #eee;font-size:10px;color:#bbb">Source: Mindbody Detailed Ticket Receipt Report. Gross = Payment Amount (Inc Taxes). Refunds = Is Return=1 (negative, already in gross). EFT includes EFT Memberships, Memberships, BEO Monthly, Weekly Recurring, Tribe, 12 Months Power Program and all other recurring types. PIF includes PIF Memberships, Unlimited Sessions, 6 Month PIF and legacy types. Run rate indicative only.</p>`;
+}
+
+function openPreview(si){document.getElementById('preview-title').textContent=SITES[si].name+' — March 2026 Report';document.getElementById('report-body').innerHTML=buildReport(si);document.getElementById('pdf-preview').style.display='block';document.getElementById('pdf-preview').scrollIntoView({behavior:'smooth',block:'start'});}
+function closePreview(){document.getElementById('pdf-preview').style.display='none';}
+
+function populateSiteSelect(){
+  const sel=document.getElementById('site-sel');
+  const groups={Red:[],Amber:[],Green:[],DG:[]};
+  SITES.forEach((s,i)=>groups[s.rag].push({s,i}));
+  sel.innerHTML=Object.entries(groups).map(([r,items])=>items.length?`<optgroup label="${RAG_LABELS[r]}">${items.map(({s,i})=>`<option value="${i}">${s.name}</option>`).join('')}</optgroup>`:'').join('');
+}
+let rrChart=null;
+function updateChart(){
+  const idx=parseInt(document.getElementById('site-sel').value);
+  const site=SITES[idx]||SITES[0];
+  const{labels,data,greenBand,redBand}=project(site);
+  if(rrChart)rrChart.destroy();
+  rrChart=new Chart(document.getElementById('rrChart'),{type:'line',
+    data:{labels,datasets:[
+      {label:'Projected',data,borderColor:'#378ADD',backgroundColor:'rgba(55,138,221,0.07)',fill:true,tension:0.3,borderWidth:2,pointRadius:3,pointBackgroundColor:'#378ADD'},
+      {label:'Green floor',data:greenBand,borderColor:'#63A822',borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false},
+      {label:'Red ceiling',data:redBand,borderColor:'#E24B4A',borderWidth:1.5,borderDash:[3,4],pointRadius:0,fill:false}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{const l=['Projected','Green floor','Red ceiling'];return l[ctx.datasetIndex]+': '+fmt(ctx.raw);}}}},
+      scales:{x:{ticks:{font:{size:10},color:'#888780',autoSkip:false,maxRotation:40},grid:{color:'rgba(128,128,128,0.08)'},border:{color:'rgba(128,128,128,0.15)'}},y:{ticks:{font:{size:10},color:'#888780',callback:v=>'£'+Math.round(v/1000)+'k'},grid:{color:'rgba(128,128,128,0.08)'},border:{color:'rgba(128,128,128,0.15)'}}}}
+  });
+}
+renderAll();populateSiteSelect();setTimeout(updateChart,200);
+</script>
